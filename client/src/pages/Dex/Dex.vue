@@ -1,13 +1,27 @@
 <template>
 	<div id="dex">
 		<div id="dex-img-panel">
-			<img id="dex-img" src="@/assets/img/001.png" alt="Bulbasaur" />
+			<img id="dex-img" alt="" />
 		</div>
-		<div id="dex-carousel"></div>
+		<div id="dex-carousel">
+			<div class="carousel-padding" />
+			<DexEntry
+				v-for="(pokemonName, i) in pokemonNames"
+				:key="i"
+				:dexNum="i + 1"
+				:pokemonName="pokemonName"
+				:curDexNum="curDexNum"
+				:onClick="handleClick"
+			/>
+			<div class="carousel-padding" />
+		</div>
 	</div>
 </template>
 
 <script>
+// Import global library
+import axios from "axios";
+
 // Import local components
 import DexEntry from "./components/DexEntry.vue";
 
@@ -15,6 +29,48 @@ export default {
 	name: "Dex",
 	components: {
 		DexEntry,
+	},
+	data() {
+		return {
+			pokemonNames: null,
+			curDexNum: 1,
+		};
+	},
+	methods: {
+		// Build image link and apply to src
+		handleImgFetch: function (i) {
+			// Get img element
+			let img = document.getElementById("dex-img");
+			// Format number
+			let num = i.toString().padStart(3, "0");
+			// Fetch image
+			img.src = `https://www.serebii.net/swordshield/pokemon/${num}.png`;
+		},
+		// Fetch Pokemon data from PokeAPI
+		handlePokemonFetch: function () {
+			// Set route
+			let uri = "/api/pokemon";
+			// Fetch
+			axios.get(uri).then((response) => {
+				// Extract names
+				this.pokemonNames = response.data.results.map(
+					(pokemon) => pokemon.name
+				);
+			});
+		},
+		// Click handler
+		handleClick: function (i) {
+			// Update current index
+			this.curDexNum = i;
+			// Update image
+			this.handleImgFetch(i)
+		},
+	},
+	mounted() {
+		// Fetch Bulbasaur image
+		this.handleImgFetch(1);
+		// Fetch Pokemon
+		this.handlePokemonFetch();
 	},
 };
 </script>
@@ -25,21 +81,49 @@ export default {
 	height: 100vh;
 	width: 100vw;
 	// Page styling
-	background: white;
+	background: $main-alt;
 	// Flexbox for layout
 	display: flex;
+	justify-content: space-evenly;
 	align-items: center;
+	// Hide carousel overflow
+	overflow-y: hidden;
 
 	#dex-img-panel {
 		// Container sizing
-		width: 45%;
-		background: black;
+		height: 100%;
+		// Flexbox for centering
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
 
-
+		#dex-img {
+			// Box styling
+			background: white;
+			border-radius: 20px;
+			// Spacing
+			padding: 8px;
+			// Border
+			border: 6px solid black;
+		}
 	}
 	#dex-carousel {
+		// Scroll
+		overflow-y: scroll;
+		// Hide scrollbar on Firefox
+		scrollbar-width: none;
 		// Container sizing
-		width: 55%;
+		height: 100vh;
+
+		&::-webkit-scrollbar {
+			// Hide scrollbar on Safari and Chrome
+			display: none;
+		}
+
+		.carousel-padding {
+			// Pad height
+			height: 45%;
+		}
 	}
 }
 </style>

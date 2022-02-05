@@ -4,4 +4,10 @@ $alt-font: Electrolize, Helvetica, Arial, sans-serif;
 
 // Colors
 $entry-color: #faf9f6;
-$active-entry-color: darken(#faf9f6, 5);
+$active-entry-color: darken(#faf9f6, 15);
+$main: #ee1515;
+$main-alt: lighten(#ee1515, 25);
+$main-accent: black;
+
+// Layers
+$top: 999;

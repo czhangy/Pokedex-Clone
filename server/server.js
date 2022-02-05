@@ -2,8 +2,6 @@
 const express = require("express");
 // Cross-origin scripting
 const cors = require("cors");
-// Database connection
-const mongoose = require("mongoose");
 // Use of .env
 require("dotenv").config();
 // Handle history routing
@@ -17,20 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(history());
 
-// MongoDB setup
-const uri = process.env.ATLAS_URI;
-mongoose
-  .connect(uri, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connection successful"))
-  .catch((err) => console.log(err));
-
-// Apply routes
-// const coursesRouter = require("./routes/course.route");
-// app.use("/api/courses", coursesRouter);
+// Apply route
+const pokemonRouter = require("./routes/pokemon.route.js");
+app.use("/api/pokemon", pokemonRouter);
 
 // Handle production
 if (process.env.NODE_ENV === "production") {
