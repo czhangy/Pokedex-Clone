@@ -16,19 +16,19 @@ export default {
 
 <style lang="scss" scoped>
 #header {
-	// Overlay
-	z-index: $top;
-	position: absolute;
 	// Sizing
+	height: 15vh;
 	width: 100vw;
 	// Bar styling
 	background: $main;
-    // Border
-    border-bottom: 5px solid black;
-    // Flexbox for layout
-    display: flex;
+	// Flexbox for centering
+	display: flex;
+	justify-content: center;
+	align-items: center;
     // Spacing
     padding: 16px;
+	// Push to top
+	z-index: $top;
 
 	#logo {
         // Container styling

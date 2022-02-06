@@ -1,17 +1,20 @@
 <template>
 	<Header />
 	<router-view />
+	<div id="bg" />
+	<Footer />
 </template>
 
 <script>
 // Import global components
 import Header from "@/components/Header.vue";
-// import Footer from "@/components/Footer.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
 	name: "App",
 	components: {
 		Header,
+		Footer,
 	}
 }
 </script>
@@ -24,8 +27,31 @@ export default {
 	font-family: $main-font;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	// Sizing
 	height: 100vh;
 	width: 100vw;
+	// Set page background
+	background: $main;
+	// Flexbox for centering
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	// Push to bottom
+	z-index: $bottom;
+
+	#bg {
+		// Positioning
+		position: absolute;
+		bottom: 0;
+		// Sizing
+		width: 100vw;
+		height: 50vh;
+		// Background color
+		background: white;
+		// Border
+		border-top: 10px solid black;
+	}
 }
 
 * {
@@ -33,14 +59,5 @@ export default {
 	padding: 0;
 	box-sizing: border-box;
 	outline: none;
-}
-
-html {
-	height: 100%;
-	overflow-x: hidden;
-}
-
-body {
-	height: 100%;
 }
 </style>

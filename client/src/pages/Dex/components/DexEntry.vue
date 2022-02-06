@@ -70,11 +70,15 @@ export default {
 	align-items: center;
 	// Spacing
 	padding: 8px 16px;
-	margin: 8px 0;
+    margin: -12px 0;
 	// Clickable
 	cursor: pointer;
 	// Border
 	border: 2px solid black;
+    // Filter
+    filter: brightness(70%);
+    // Prevent highlighting
+    user-select: none;
 
 	.pokeball-icon {
 		// Sizing
@@ -99,6 +103,16 @@ export default {
 
 .active-dex-entry {
 	// Highlight
-	background: $active-entry-color;
+	filter: brightness(100%);
+    // Add spacing
+    margin: 20px 0;
+}
+
+// Sticky hover
+@media (hover: hover) {
+    .active-dex-entry:hover {
+        // Animate
+        background: $entry-hover-color;
+    }
 }
 </style>

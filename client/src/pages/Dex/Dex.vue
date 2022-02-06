@@ -105,25 +105,30 @@ export default {
 <style lang="scss" scoped>
 #dex {
 	// Sizing
-	height: 100vh;
-	width: 100vw;
+	height: $window-height;
+	width: $window-width;
 	// Page styling
-	background: $main-alt;
+	background: $page-bg-color;
 	// Flexbox for layout
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	// Handle carousel overflow
 	overflow-y: hidden;
+	// Add border
+	border: 5px solid black;
+	// Push to top
+	z-index: $top;
 
 	#dex-img-panel {
 		// Container sizing
 		height: 100%;
-		width: 60%;
 		// Flexbox for centering
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
+		// Spacing
+		margin: 0 40px;
 
 		#dex-img {
 			// Box styling
