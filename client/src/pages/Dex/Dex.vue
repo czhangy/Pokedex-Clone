@@ -9,8 +9,8 @@
 				v-for="(pokemonName, i) in pokemonNames"
 				:key="i"
 				:dexNum="i + 1"
-				:pokemonName="pokemonName"
 				:curDexNum="curDexNum"
+				:pokemonName="pokemonName"
 				:onClick="handleClick"
 			/>
 			<div class="carousel-padding" />
@@ -63,7 +63,34 @@ export default {
 			// Update current index
 			this.curDexNum = i;
 			// Update image
-			this.handleImgFetch(i)
+			this.handleImgFetch(i);
+			// Re-style carousel
+			this.handleIndentation();
+		},
+		// Style carousel by indenting DexEntries
+		handleIndentation: function () {
+			// Target DexEntries
+			let entries = document.getElementsByClassName("dex-entry");
+			// Save reference to component
+			let ref = this;
+			Array.from(entries).forEach(function (entry, ind) {
+				// Get dexNum using index
+				let dexNum = ind + 1;
+				// Calculate offset based on distance from curDexNum
+				let offset = Math.abs(dexNum - ref.curDexNum) * 30;
+				// Enable/disable transition
+				entries[ind].style.transition =
+					dexNum === ref.curDexNum ? "none" : "margin-left 0.2s";
+				// Apply CSS transform
+				entries[ind].style.marginLeft = `${offset}px`;
+				// Scroll to correct position
+				if (dexNum === ref.curDexNum)
+					entries[ind].scrollIntoView({
+						behavior: "smooth",
+						block: "center",
+						inline: "start",
+					});
+			});
 		},
 	},
 	mounted() {
@@ -84,14 +111,15 @@ export default {
 	background: $main-alt;
 	// Flexbox for layout
 	display: flex;
-	justify-content: space-evenly;
+	justify-content: space-between;
 	align-items: center;
-	// Hide carousel overflow
+	// Handle carousel overflow
 	overflow-y: hidden;
 
 	#dex-img-panel {
 		// Container sizing
 		height: 100%;
+		width: 60%;
 		// Flexbox for centering
 		display: flex;
 		justify-content: flex-end;
@@ -107,13 +135,15 @@ export default {
 			border: 6px solid black;
 		}
 	}
+
 	#dex-carousel {
-		// Scroll
-		overflow-y: scroll;
 		// Hide scrollbar on Firefox
 		scrollbar-width: none;
 		// Container sizing
 		height: 100vh;
+		width: 500px;
+		// Scroll functionality
+		overflow: hidden;
 
 		&::-webkit-scrollbar {
 			// Hide scrollbar on Safari and Chrome

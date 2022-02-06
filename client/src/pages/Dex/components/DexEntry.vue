@@ -18,13 +18,13 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		pokemonName: {
-			type: String,
-			default: "Missingno",
-		},
 		curDexNum: {
 			type: Number,
 			required: true,
+		},
+		pokemonName: {
+			type: String,
+			default: "Missingno",
 		},
 		onClick: {
 			type: Function,
@@ -34,10 +34,6 @@ export default {
 	methods: {
 		// Click handler
 		handleClick: function () {
-			// Scroll into view
-			this.handleScroll();
-			// Adjust styling
-			this.handleIndentation();
 			// Alert parent
 			this.onClick(this.dexNum);
 		},
@@ -45,31 +41,19 @@ export default {
 		handleNumFormat: function (i) {
 			return i.toString().padStart(3, "0");
 		},
-		// Handle scrolling of DexEntries
-		handleScroll: function () {
-			// Transform dexNum into index
-			let ind = this.dexNum - 1;
-			// Target corresponding DexEntry
-			let entry = document.getElementsByClassName("dex-entry")[ind];
-			// Scroll target into center frame
-			entry.scrollIntoView({ behavior: "smooth", block: "center" });
-		},
-		handleIndentation: function () {
-			// Target DexEntries
-			let entries = document.getElementsByClassName("dex-entry");
-            let ref = this;
-			Array.from(entries).forEach(function (entry, ind) {
-				let dexNum = ind + 1;
-				// Calculate offset based on distance from curDexNum
-				let offset = Math.abs(dexNum - ref.curDexNum) * 10;
-                console.log(offset);
-				entries[ind].style.transform = `translateX(${offset}px)`;
-			});
+		// Style initial carousel
+		handleInitIndentation: function () {
+			// Target current DexEntry
+			let entry =
+				document.getElementsByClassName("dex-entry")[this.dexNum - 1];
+			// Calculate offset based on distance from dexNum = 1
+			let offset = (this.dexNum - 1) * 30;
+			entry.style.marginLeft = `${offset}px`;
 		},
 	},
 	mounted() {
-		// Style carousel
-		this.handleIndentation();
+		// Initialize carousel
+		this.handleInitIndentation();
 	},
 };
 </script>
@@ -77,7 +61,7 @@ export default {
 <style lang="scss" scoped>
 .dex-entry {
 	// Sizing
-	width: 500px;
+	width: 600px;
 	// Tile styling
 	background: $entry-color;
 	border-radius: 50px 10px 10px 50px;
