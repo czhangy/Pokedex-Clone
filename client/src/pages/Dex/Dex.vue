@@ -8,8 +8,9 @@
 			<DexEntry
 				v-for="(pokemon, i) in pokemonList"
 				:key="i"
-				:curDexNum="curDexNum"
 				:pokemon="pokemon"
+				:ind="i"
+				:curInd="curInd"
 				:onClick="handleClick"
 			/>
 			<div class="carousel-padding" />
@@ -37,7 +38,7 @@ export default {
 	data() {
 		return {
 			pokemonList: null,
-			curDexNum: 1,
+			curInd: 0,
 		};
 	},
 	methods: {
@@ -71,9 +72,9 @@ export default {
 		// Click handler
 		handleClick: function (i) {
 			// Update current index
-			this.curDexNum = i;
+			this.curInd = i;
 			// Update image
-			this.handleImgFetch(i);
+			this.handleImgFetch(this.pokemonList[this.curInd].num);
 			// Re-style carousel
 			this.handleIndentation();
 		},
@@ -84,17 +85,15 @@ export default {
 			// Save reference to component
 			let ref = this;
 			Array.from(entries).forEach(function (entry, ind) {
-				// Get dexNum using index
-				let dexNum = ind + 1;
-				// Calculate offset based on distance from curDexNum
-				let offset = Math.abs(dexNum - ref.curDexNum) * 30;
+				// Calculate offset based on distance from curInd
+				let offset = Math.abs(ind - ref.curInd) * 30;
 				// Enable/disable transition
 				entries[ind].style.transition =
-					dexNum === ref.curDexNum ? "none" : "margin-left 0.2s";
+					ind === ref.curInd ? "none" : "margin-left 0.2s";
 				// Apply CSS transform
 				entries[ind].style.marginLeft = `${offset}px`;
 				// Scroll to correct position
-				if (dexNum === ref.curDexNum)
+				if (ind === ref.curInd)
 					entries[ind].scrollIntoView({
 						behavior: "smooth",
 						block: "center",

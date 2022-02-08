@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="dex-entry"
-		:class="{ 'active-dex-entry': pokemon.num === curDexNum }"
+		:class="{ 'active-dex-entry': ind === curInd }"
 		@click="handleClick"
 	>
 		<img class="pokeball-icon" alt="" src="@/assets/img/pokeball.svg" />
@@ -14,16 +14,20 @@
 export default {
 	name: "DexEntry",
 	props: {
-		curDexNum: {
-			type: Number,
-			required: true,
-		},
 		pokemon: {
 			type: Object,
 			default: {
 				name: "Missingno",
 				num: 0,
 			},
+		},
+		ind: {
+			type: Number,
+			required: true,
+		},
+		curInd: {
+			type: Number,
+			required: true,
 		},
 		onClick: {
 			type: Function,
@@ -34,7 +38,7 @@ export default {
 		// Click handler
 		handleClick: function () {
 			// Alert parent
-			this.onClick(this.pokemon.num);
+			this.onClick(this.ind);
 		},
 		// Format numbers
 		handleNumFormat: function (i) {
@@ -43,12 +47,9 @@ export default {
 		// Style initial carousel
 		handleInitIndentation: function () {
 			// Target current DexEntry
-			let entry =
-				document.getElementsByClassName("dex-entry")[
-					this.pokemon.num - 1
-				];
-			// Calculate offset based on distance from dexNum = 1
-			let offset = (this.pokemon.num - 1) * 30;
+			let entry = document.getElementsByClassName("dex-entry")[this.ind];
+			// Calculate offset based on distance from starting index
+			let offset = this.ind * 30;
 			entry.style.marginLeft = `${offset}px`;
 		},
 	},
