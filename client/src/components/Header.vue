@@ -48,6 +48,7 @@ export default {
 			color: white;
 			// Spacing
 			margin: 0 8px;
+			line-height: 2.5rem;
 		}
 
 		.logo-img {

@@ -95,11 +95,13 @@ export default {
 		margin-right: 18px;
 		// Typography
 		font-size: 2rem;
+		line-height: 2rem;
 	}
 
 	.pokemon-name {
 		// Typography
 		font-size: 1.5rem;
+		line-height: 1.5rem;
 	}
 }
 
