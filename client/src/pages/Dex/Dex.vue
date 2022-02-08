@@ -6,14 +6,18 @@
 		<div id="dex-carousel">
 			<div class="carousel-padding" />
 			<DexEntry
-				v-for="(pokemonName, i) in pokemonNames"
+				v-for="(pokemon, i) in pokemonList"
 				:key="i"
-				:dexNum="i + 1"
 				:curDexNum="curDexNum"
-				:pokemonName="pokemonName"
+				:pokemon="pokemon"
 				:onClick="handleClick"
 			/>
 			<div class="carousel-padding" />
+		</div>
+		<div id="dex-nav">
+			<button class="nav-button">
+				
+			</button>
 		</div>
 	</div>
 </template>
@@ -32,7 +36,7 @@ export default {
 	},
 	data() {
 		return {
-			pokemonNames: null,
+			pokemonList: null,
 			curDexNum: 1,
 		};
 	},
@@ -53,9 +57,15 @@ export default {
 			// Fetch
 			axios.get(uri).then((response) => {
 				// Extract names
-				this.pokemonNames = response.data.results.map(
+				this.pokemonList = response.data.results.map(
 					(pokemon) => pokemon.name
 				);
+				// Build pokemon objects
+				for (let i in this.pokemonList)
+					this.pokemonList[i] = {
+						name: this.pokemonList[i],
+						num: parseInt(i) + 1,
+					};
 			});
 		},
 		// Click handler
@@ -160,5 +170,16 @@ export default {
 			height: 45%;
 		}
 	}
+
+	#dex-nav {
+		// Positioning
+		position: absolute;
+		height: $window-height;
+		width: 20vw;
+
+		.nav-button {
+			
+		}
+	} 
 }
 </style>

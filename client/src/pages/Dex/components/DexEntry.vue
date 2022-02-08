@@ -1,12 +1,12 @@
 <template>
 	<div
 		class="dex-entry"
-		:class="{ 'active-dex-entry': dexNum === curDexNum }"
+		:class="{ 'active-dex-entry': pokemon.num === curDexNum }"
 		@click="handleClick"
 	>
 		<img class="pokeball-icon" alt="" src="@/assets/img/pokeball.svg" />
-		<p class="dex-number">{{ handleNumFormat(dexNum) }}</p>
-		<p class="pokemon-name">{{ pokemonName }}</p>
+		<p class="dex-number">{{ handleNumFormat(pokemon.num) }}</p>
+		<p class="pokemon-name">{{ pokemon.name }}</p>
 	</div>
 </template>
 
@@ -14,17 +14,16 @@
 export default {
 	name: "DexEntry",
 	props: {
-		dexNum: {
-			type: Number,
-			default: 0,
-		},
 		curDexNum: {
 			type: Number,
 			required: true,
 		},
-		pokemonName: {
-			type: String,
-			default: "Missingno",
+		pokemon: {
+			type: Object,
+			default: {
+				name: "Missingno",
+				num: 0,
+			},
 		},
 		onClick: {
 			type: Function,
@@ -35,7 +34,7 @@ export default {
 		// Click handler
 		handleClick: function () {
 			// Alert parent
-			this.onClick(this.dexNum);
+			this.onClick(this.pokemon.num);
 		},
 		// Format numbers
 		handleNumFormat: function (i) {
@@ -45,9 +44,11 @@ export default {
 		handleInitIndentation: function () {
 			// Target current DexEntry
 			let entry =
-				document.getElementsByClassName("dex-entry")[this.dexNum - 1];
+				document.getElementsByClassName("dex-entry")[
+					this.pokemon.num - 1
+				];
 			// Calculate offset based on distance from dexNum = 1
-			let offset = (this.dexNum - 1) * 30;
+			let offset = (this.pokemon.num - 1) * 30;
 			entry.style.marginLeft = `${offset}px`;
 		},
 	},
@@ -70,15 +71,15 @@ export default {
 	align-items: center;
 	// Spacing
 	padding: 8px 16px;
-    margin: -12px 0;
+	margin: -12px 0;
 	// Clickable
 	cursor: pointer;
 	// Border
 	border: 2px solid black;
-    // Filter
-    filter: brightness(70%);
-    // Prevent highlighting
-    user-select: none;
+	// Filter
+	filter: brightness(70%);
+	// Prevent highlighting
+	user-select: none;
 
 	.pokeball-icon {
 		// Sizing
@@ -104,15 +105,15 @@ export default {
 .active-dex-entry {
 	// Highlight
 	filter: brightness(100%);
-    // Add spacing
-    margin: 20px 0;
+	// Add spacing
+	margin: 20px 0;
 }
 
 // Sticky hover
 @media (hover: hover) {
-    .active-dex-entry:hover {
-        // Animate
-        background: $entry-hover-color;
-    }
+	.active-dex-entry:hover {
+		// Animate
+		background: $entry-hover-color;
+	}
 }
 </style>
