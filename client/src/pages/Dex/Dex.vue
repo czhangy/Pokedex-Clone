@@ -1,25 +1,22 @@
 <template>
 	<div id="dex">
-		<div id="dex-img-panel">
-			<img id="dex-img" alt="" />
+		<div id="dex-window">
+			<div id="dex-img-panel">
+				<img id="dex-img" alt="" />
+			</div>
+			<div id="dex-carousel">
+				<div class="carousel-padding" />
+				<DexEntry
+					v-for="(pokemon, i) in pokemonList"
+					:key="i"
+					:pokemon="pokemon"
+					:ind="i"
+					:curInd="curInd"
+				/>
+				<div class="carousel-padding" />
+			</div>
 		</div>
-		<div id="dex-carousel">
-			<div class="carousel-padding" />
-			<DexEntry
-				v-for="(pokemon, i) in pokemonList"
-				:key="i"
-				:pokemon="pokemon"
-				:ind="i"
-				:curInd="curInd"
-				:onClick="handleClick"
-			/>
-			<div class="carousel-padding" />
-		</div>
-		<div id="dex-nav">
-			<button class="nav-button">
-				
-			</button>
-		</div>
+		<Navigation :onUpClick="handleScrollUp" :onDownClick="handleScrollDown" />
 	</div>
 </template>
 
@@ -27,12 +24,16 @@
 // Import global library
 import axios from "axios";
 
+// Import global components
+import Navigation from "@/components/Navigation.vue";
+
 // Import local components
 import DexEntry from "./components/DexEntry.vue";
 
 export default {
 	name: "Dex",
 	components: {
+		Navigation,
 		DexEntry,
 	},
 	data() {
@@ -69,10 +70,19 @@ export default {
 					};
 			});
 		},
-		// Click handler
-		handleClick: function (i) {
+		// Scroll up
+		handleScrollUp: function (di) {
 			// Update current index
-			this.curInd = i;
+			this.curInd = Math.max(this.curInd - di, 0);
+			// Update image
+			this.handleImgFetch(this.pokemonList[this.curInd].num);
+			// Re-style carousel
+			this.handleIndentation();
+		},
+		// Scroll down
+		handleScrollDown: function (di) {
+			// Update current index
+			this.curInd = Math.min(this.curInd + di, this.pokemonList.length - 1);
 			// Update image
 			this.handleImgFetch(this.pokemonList[this.curInd].num);
 			// Re-style carousel
@@ -113,72 +123,64 @@ export default {
 
 <style lang="scss" scoped>
 #dex {
-	// Sizing
-	height: $window-height;
-	width: $window-width;
-	// Page styling
-	background: $page-bg-color;
-	// Flexbox for layout
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	// Handle carousel overflow
-	overflow-y: hidden;
-	// Add border
-	border: 5px solid black;
-	// Push to top
-	z-index: $top;
+	// Positioning for nav
+	position: relative;
 
-	#dex-img-panel {
-		// Container sizing
-		height: 100%;
-		// Flexbox for centering
-		display: flex;
-		justify-content: flex-end;
-		align-items: center;
-		// Spacing
-		margin: 0 40px;
-
-		#dex-img {
-			// Box styling
-			background: white;
-			border-radius: 20px;
-			// Spacing
-			padding: 8px;
-			// Border
-			border: 6px solid black;
-		}
-	}
-
-	#dex-carousel {
-		// Hide scrollbar on Firefox
-		scrollbar-width: none;
-		// Container sizing
-		height: 100vh;
-		width: 500px;
-		// Scroll functionality
-		overflow: hidden;
-
-		&::-webkit-scrollbar {
-			// Hide scrollbar on Safari and Chrome
-			display: none;
-		}
-
-		.carousel-padding {
-			// Pad height
-			height: 45%;
-		}
-	}
-
-	#dex-nav {
-		// Positioning
-		position: absolute;
+	#dex-window {
+		// Sizing
 		height: $window-height;
-		width: 20vw;
+		width: $window-width;
+		// Page styling
+		background: $page-bg-color;
+		// Flexbox for layout
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		// Handle carousel overflow
+		overflow-y: hidden;
+		// Add border
+		border: 5px solid black;
 
-		.nav-button {
-			
+		#dex-img-panel {
+			// Container sizing
+			height: 100%;
+			// Flexbox for centering
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			// Spacing
+			margin: 0 40px;
+
+			#dex-img {
+				// Box styling
+				background: white;
+				border-radius: 20px;
+				// Spacing
+				padding: 8px;
+				// Border
+				border: 6px solid black;
+			}
 		}
-	} 
+
+		#dex-carousel {
+			// Hide scrollbar on Firefox
+			scrollbar-width: none;
+			// Container sizing
+			height: 100vh;
+			width: 500px;
+			// Scroll functionality
+			overflow: hidden;
+
+			&::-webkit-scrollbar {
+				// Hide scrollbar on Safari and Chrome
+				display: none;
+			}
+
+			.carousel-padding {
+				// Pad height
+				height: 45%;
+			}
+		}
+	}
 }
 </style>

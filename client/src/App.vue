@@ -1,6 +1,8 @@
 <template>
 	<Header />
-	<router-view />
+	<div id="main">
+		<router-view />
+	</div>
 	<div id="bg" />
 	<Footer />
 </template>
@@ -15,8 +17,8 @@ export default {
 	components: {
 		Header,
 		Footer,
-	}
-}
+	},
+};
 </script>
 
 <style lang="scss">
@@ -39,6 +41,11 @@ export default {
 	align-items: center;
 	// Push to bottom
 	z-index: $bottom;
+
+	#main {
+		// Push to top
+		z-index: $top;
+	}
 
 	#bg {
 		// Positioning

@@ -2,7 +2,6 @@
 	<div
 		class="dex-entry"
 		:class="{ 'active-dex-entry': ind === curInd }"
-		@click="handleClick"
 	>
 		<img class="pokeball-icon" alt="" src="@/assets/img/pokeball.svg" />
 		<p class="dex-number">{{ handleNumFormat(pokemon.num) }}</p>
@@ -29,17 +28,8 @@ export default {
 			type: Number,
 			required: true,
 		},
-		onClick: {
-			type: Function,
-			required: true,
-		},
 	},
 	methods: {
-		// Click handler
-		handleClick: function () {
-			// Alert parent
-			this.onClick(this.ind);
-		},
 		// Format numbers
 		handleNumFormat: function (i) {
 			return i.toString().padStart(3, "0");
@@ -73,8 +63,6 @@ export default {
 	// Spacing
 	padding: 8px 16px;
 	margin: -12px 0;
-	// Clickable
-	cursor: pointer;
 	// Border
 	border: 2px solid black;
 	// Filter
@@ -110,6 +98,8 @@ export default {
 	filter: brightness(100%);
 	// Add spacing
 	margin: 20px 0;
+	// Clickable
+	cursor: pointer;
 }
 
 // Sticky hover
