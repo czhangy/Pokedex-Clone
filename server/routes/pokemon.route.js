@@ -5,7 +5,8 @@ const router = require('express').Router();
 const PokemonCtrl = require('../controllers/pokemon.controller.js');
 
 // Define routes
-router.get("/", PokemonCtrl.getPokemon);
+router.get("/", PokemonCtrl.getAllPokemon);
+router.get("/info/:name", PokemonCtrl.getPokemonByName);
 
 // Export router
 module.exports = router;

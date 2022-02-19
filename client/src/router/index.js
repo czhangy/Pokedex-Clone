@@ -6,6 +6,11 @@ const routes = [
 		name: "Dex",
 		component: () => import("@/pages/Dex/Dex.vue"),
 	},
+	{
+		path: "/info/:pokemon",
+		name: "Info",
+		component: () => import("@/pages/Info/Info.vue"),
+	},
 ];
 
 const router = createRouter({

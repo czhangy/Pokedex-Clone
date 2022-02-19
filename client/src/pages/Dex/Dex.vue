@@ -131,7 +131,7 @@ export default {
 		height: $window-height;
 		width: $window-width;
 		// Page styling
-		background: $page-bg-color;
+		background: $dex-bg-color;
 		// Flexbox for layout
 		display: flex;
 		justify-content: space-between;

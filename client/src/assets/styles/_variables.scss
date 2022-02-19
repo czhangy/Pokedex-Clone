@@ -5,12 +5,13 @@ $alt-font: Electrolize, Helvetica, Arial, sans-serif;
 // Colors
 $entry-color: #faf9f6;
 $entry-hover-color: darken(#faf9f6, 15);
-$page-bg-color: linear-gradient(
+$dex-bg-color: linear-gradient(
     0deg,
     rgba(106, 103, 76, 1) 0%,
     rgba(145, 145, 147, 1) 50%,
     rgba(106, 103, 76, 1) 100%
 );
+$info-bg-color: lighten(grey, 10);
 $nav-button-color: #4fc3f7;
 $main: #ee1515;
 $main-alt: lighten(#ee1515, 25);
