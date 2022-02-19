@@ -2,20 +2,42 @@
 $main-font: Bungee, Helvetica, Arial, sans-serif;
 $alt-font: Electrolize, Helvetica, Arial, sans-serif;
 
-// Colors
+// Component Colors
 $entry-color: #faf9f6;
 $entry-hover-color: darken(#faf9f6, 15);
 $dex-bg-color: linear-gradient(
-    0deg,
-    rgba(106, 103, 76, 1) 0%,
-    rgba(145, 145, 147, 1) 50%,
-    rgba(106, 103, 76, 1) 100%
+	0deg,
+	rgba(106, 103, 76, 1) 0%,
+	rgba(145, 145, 147, 1) 50%,
+	rgba(106, 103, 76, 1) 100%
 );
-$info-bg-color: lighten(grey, 10);
+$info-bg-color: darken(#faf9f6, 10);
 $nav-button-color: #4fc3f7;
+
+// Theme Colors
 $main: #ee1515;
 $main-alt: lighten(#ee1515, 25);
 $main-accent: black;
+
+// Type Colors
+$normal: #a8a77a;
+$fire: #ee8130;
+$water: #6390f0;
+$electric: #f7d02c;
+$grass: #7ac74c;
+$ice: #96d9d6;
+$fighting: #c22e28;
+$poison: #a33ea1;
+$ground: #e2bf65;
+$flying: #a98ff3;
+$psychic: #f95587;
+$bug: #a6b91a;
+$rock: #b6a136;
+$ghost: #735797;
+$dragon: #6f35fc;
+$dark: #705746;
+$steel: #b7b7ce;
+$fairy: #d685ad;
 
 // Layers
 $top: 99;

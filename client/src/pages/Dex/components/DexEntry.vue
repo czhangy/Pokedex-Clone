@@ -1,12 +1,13 @@
 <template>
-	<div
+	<a
+        href="/info"
 		class="dex-entry"
 		:class="{ 'active-dex-entry': ind === curInd }"
 	>
 		<img class="pokeball-icon" alt="" src="@/assets/img/pokeball.svg" />
 		<p class="dex-number">{{ handleNumFormat(pokemon.num) }}</p>
 		<p class="pokemon-name">{{ pokemon.name }}</p>
-	</div>
+	</a>
 </template>
 
 <script>
@@ -42,10 +43,19 @@ export default {
 			let offset = this.ind * 30;
 			entry.style.marginLeft = `${offset}px`;
 		},
+        // Mount link to <a> tag
+        handleLink: function () {
+            // Target current DexEntry
+			let entry = document.getElementsByClassName("dex-entry")[this.ind];
+            // Set href to correct link
+            entry.href = entry.href + `/${this.pokemon.name}`
+        }
 	},
 	mounted() {
 		// Initialize carousel
 		this.handleInitIndentation();
+        // Initialize href
+        this.handleLink();
 	},
 };
 </script>
@@ -69,6 +79,9 @@ export default {
 	filter: brightness(70%);
 	// Prevent highlighting
 	user-select: none;
+    // Remove default styling
+    text-decoration: none;
+    color: black;
 
 	.pokeball-icon {
 		// Sizing

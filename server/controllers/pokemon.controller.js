@@ -6,7 +6,7 @@ const P = new Pokedex.Pokedex();
 exports.getAllPokemon = async (req, res) => {
     // Get all Gen IV Pokemon
     const interval = {
-        limit: 493,
+        limit: 151,
         offset: 0,
     };
     // Fetch from PokeAPI
