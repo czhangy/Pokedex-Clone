@@ -32,3 +32,17 @@ exports.getPokemonByName = async (req, res) => {
             return res.status(400).json("Error: " + err);
         });
 };
+
+// Gets a species object by name => /api/species/:name
+exports.getSpeciesByName = async (req, res) => {
+    // Get Pokemon name
+    const name = req.params.name;
+    // Fetch from PokeAPI
+    P.getPokemonSpeciesByName(name)
+        .then((response) => {
+            return res.status(200).json(response);
+        })
+        .catch((err) => {
+            return res.status(400).json("Error: " + err);
+        });
+};
