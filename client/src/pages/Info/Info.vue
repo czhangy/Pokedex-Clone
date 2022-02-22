@@ -1,5 +1,5 @@
 <template>
-	<div v-if="pokemon && species" id="info">
+	<div v-if="isLoaded" id="info">
 		<a href="/" id="nav">
 			<img
 				id="back-arrow"
@@ -10,20 +10,22 @@
 		<div id="info-header">
 			<img id="box-sprite" alt="" />
 			<p id="dex-number">#{{ handleDexNum() }}</p>
-			<p id="pokemon-name">{{ handleName() }}</p>
+			<p id="pokemon-name">{{ handleName($route.params.pokemon) }}</p>
 		</div>
 		<hr id="separator" />
 		<div id="info-container">
 			<div id="description" class="info-box">
 				<p class="title">Description</p>
 				<p class="text">
-					{{ handleDescription() }}
+					{{
+						handleDescriptions(pokemon.species.flavor_text_entries)
+					}}
 				</p>
 			</div>
 			<div id="typing" class="info-box">
 				<p class="title">Typing</p>
 				<p
-					v-for="(type, i) in pokemon.types"
+					v-for="(type, i) in pokemon.data.types"
 					:key="i"
 					class="type-plaque"
 					:style="{ background: handleTypeColor(type.type.name) }"
@@ -33,36 +35,53 @@
 			</div>
 			<div id="classification" class="info-box">
 				<p class="title">Classification</p>
-				<p class="text">{{ species.genera[7].genus }}</p>
+				<p class="text">{{ pokemon.species.genera[7].genus }}</p>
 			</div>
 			<div id="height" class="info-box">
 				<p class="title">Height</p>
-				<p class="text">{{ pokemon.height / 10 }}m</p>
+				<p class="text">{{ pokemon.data.height / 10 }}m</p>
 			</div>
 			<div id="weight" class="info-box">
 				<p class="title">Weight</p>
-				<p class="text">{{ pokemon.weight / 10 }}kg</p>
+				<p class="text">{{ pokemon.data.weight / 10 }}kg</p>
 			</div>
 			<div id="base-exp" class="info-box">
 				<p class="title">Base Experience</p>
-				<p class="text">{{ pokemon.base_experience }}</p>
+				<p class="text">{{ pokemon.data.base_experience }}</p>
 			</div>
 			<div id="capture-rate" class="info-box">
 				<p class="title">Capture Rate</p>
-				<p class="text">{{ species.capture_rate }}</p>
+				<p class="text">{{ pokemon.species.capture_rate }}</p>
 			</div>
 			<div id="color" class="info-box">
 				<p class="title">Color</p>
-				<p class="text">{{ handleUppercase(species.color.name) }}</p>
+				<p class="text">
+					{{ handleUppercase(pokemon.species.color.name) }}
+				</p>
 			</div>
-            <div id="shape" class="info-box">
+			<div id="shape" class="info-box">
 				<p class="title">Shape</p>
-				<p v-if="species.shape" class="text">{{ handleUppercase(species.shape.name) }}</p>
-                <p v-else class="text">N/A</p>
+				<p v-if="pokemon.species.shape" class="text">
+					{{ handleUppercase(pokemon.species.shape.name) }}
+				</p>
+				<p v-else class="text">N/A</p>
 			</div>
 			<div id="stats" class="info-box">
 				<p class="title">Base Stats</p>
 				<div id="chart" ref="radar" />
+			</div>
+			<div id="abilities" class="info-box">
+				<p class="title">Abilities</p>
+				<p
+					v-for="(ability, i) in pokemon.abilities"
+					:key="i"
+					id="ability-text"
+					class="text"
+				>
+					<strong v-if="ability.hidden">(Hidden) </strong>
+					<strong>{{ handleName(ability.name) }}:</strong>
+					{{ handleDescriptions(ability.flavor_text_entries) }}
+				</p>
 			</div>
 		</div>
 	</div>
@@ -80,8 +99,8 @@ export default {
 	name: "Info",
 	data() {
 		return {
-			pokemon: null,
-			species: null,
+			pokemon: {},
+			isLoaded: false,
 			typeColors: {
 				normal: "#a8a77a",
 				fire: "#ee8130",
@@ -105,24 +124,32 @@ export default {
 		};
 	},
 	methods: {
-        // Fetch Pokemon object from PokeAPI
+		// Fetch Pokemon object from PokeAPI
 		handleFetchPokemon: async function () {
-			let uri = "/api/pokemon/species/" + this.$route.params.pokemon;
+			// Fetch main object
+			let uri = "/api/pokemon/pokemon/" + this.$route.params.pokemon;
 			await axios.get(uri).then((response) => {
-				// Extract name
-				this.species = response.data;
-				console.log(this.species);
+				this.pokemon.data = response.data;
+				console.log(this.pokemon.data);
 			});
-			uri = "/api/pokemon/pokemon/" + this.$route.params.pokemon;
-			axios.get(uri).then((response) => {
-				// Extract name
-				this.pokemon = response.data;
-				console.log(this.pokemon);
-				// Load chart
-				this.$nextTick(() => this.handleBaseStats());
-				// Re-render and fetch image
-				this.$nextTick(() => this.handleImgFetch());
+			// Fetch species object
+			await axios.get(this.pokemon.data.species.url).then((response) => {
+				this.pokemon.species = response.data;
+				console.log(this.pokemon.species);
 			});
+			// Fetch abilities array
+			this.pokemon.abilities = [];
+			for (let ability of this.pokemon.data.abilities) {
+				await axios.get(ability.ability.url).then((response) => {
+					response.data["hidden"] = ability.is_hidden;
+					this.pokemon.abilities.push(response.data);
+					console.log(this.pokemon.abilities);
+				});
+			}
+			// Finalize loading
+			this.isLoaded = true;
+			this.$nextTick(() => this.handleBaseStats());
+			this.$nextTick(() => this.handleImgFetch());
 		},
 		// Build image link and apply to src
 		handleImgFetch: function () {
@@ -131,18 +158,17 @@ export default {
 			// Fetch image
 			img.src = `https://www.serebii.net/pokedex-swsh/icon/${num}.png`;
 		},
-        // Capitalize words
-        handleUppercase: function (word) {
-            return word.charAt(0).toUpperCase() + word.substring(1);
-        },
+		// Capitalize words
+		handleUppercase: function (word) {
+			return word.charAt(0).toUpperCase() + word.substring(1);
+		},
 		// Format numbers
 		handleDexNum: function () {
 			// Pad number with 0s at the front
-			return this.pokemon.id.toString().padStart(3, "0");
+			return this.pokemon.data.id.toString().padStart(3, "0");
 		},
-		// Format Pokemon name
-		handleName: function () {
-			let name = this.$route.params.pokemon;
+		// Format names
+		handleName: function (name) {
 			// Handle edge cases
 			if (name === "mr-mime") return "Mr. Mime";
 			else if (name === "mime-jr") return "Mime Jr.";
@@ -152,22 +178,16 @@ export default {
 				// Capitalize beginning of each word
 				return name
 					.split(" ")
-					.map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+					.map((s) => this.handleUppercase(s))
 					.join(" ");
 			}
 		},
-		// Select the correct description
-		handleDescription: function () {
+		// Select the most recent descriptions
+		handleDescriptions: function (desc) {
 			// Loop from most recent to oldest
-			for (
-				let i = this.species.flavor_text_entries.length - 1;
-				i >= 0;
-				i--
-			) {
+			for (let i = desc.length - 1; i >= 0; i--)
 				// Return the first English description
-				if (this.species.flavor_text_entries[i].language.name === "en")
-					return this.species.flavor_text_entries[i].flavor_text;
-			}
+				if (desc[i].language.name === "en") return desc[i].flavor_text;
 			// Error handling
 			return "N/A";
 		},
@@ -187,7 +207,9 @@ export default {
 				series: [
 					{
 						name: "Base Stats",
-						data: this.pokemon.stats.map((stat) => stat.base_stat),
+						data: this.pokemon.data.stats.map(
+							(stat) => stat.base_stat
+						),
 					},
 				],
 				fill: {
@@ -258,7 +280,7 @@ export default {
 		},
 	},
 	mounted() {
-		// Fetch Pokemon objects
+		// Fetch Pokemon object
 		this.handleFetchPokemon();
 	},
 };
@@ -346,7 +368,7 @@ export default {
 	#info-container {
 		// Grid layout
 		display: grid;
-		grid-template-rows: repeat(7, 100px);
+		grid-template-rows: repeat(15, 100px);
 		grid-template-columns: repeat(13, 1fr);
 		gap: 10px;
 		// Sizing
@@ -366,8 +388,6 @@ export default {
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			// Spacing
-			padding: 0 24px;
 
 			.title {
 				// Underline
@@ -379,8 +399,15 @@ export default {
 			}
 
 			.text {
+				// Spacing
+				padding: 0 36px;
 				// Centering
 				text-align: center;
+			}
+
+			.left-aligned {
+				// Alignment
+				text-align: left;
 			}
 		}
 
@@ -446,7 +473,7 @@ export default {
 			grid-column: 1 / 6;
 		}
 
-        #shape {
+		#shape {
 			// Positioning
 			grid-row: 7;
 			grid-column: 1 / 6;
@@ -460,6 +487,27 @@ export default {
 			#chart {
 				// Spacing
 				margin-top: 24px;
+			}
+		}
+
+		#abilities {
+			// Positioning
+			grid-row: 8 / 11;
+			grid-column: 1 / 14;
+
+			#ability-text {
+				// Alignment
+				text-align: left;
+				width: 100%;
+				// Spacing
+				margin-bottom: 20px;
+				// Typography
+				font-size: 1.3rem;
+
+				&:last-child {
+					// Remove spacing
+					margin-bottom: 0;
+				}
 			}
 		}
 	}
